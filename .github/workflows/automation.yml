@@ -18,9 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Slack 알림 전송
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.0.0
         with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
           payload: |
             {
               "text": "🆕 새 이슈가 생성되었습니다!",
@@ -116,9 +117,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Slack 알림 전송
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.0.0
         with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
           payload: |
             {
               "text": "🔀 새 PR이 생성되었습니다!",
@@ -209,9 +211,10 @@ jobs:
             });
 
       - name: Slack 알림 전송
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.0.0
         with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
           payload: |
             {
               "text": "✅ PR이 머지되었습니다!",
