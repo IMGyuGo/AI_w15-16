@@ -8,7 +8,7 @@ on:
   create:
 
 env:
-  ORGANIZATION: IMGyuGo
+  OWNER: IMGyuGo
   PROJECT_NUMBER: 9
 
 jobs:
@@ -58,13 +58,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const org = process.env.ORGANIZATION;
+            const owner = process.env.OWNER;
             const projectNumber = parseInt(process.env.PROJECT_NUMBER);
             const issueNodeId = context.payload.issue.node_id;
 
             const project = await github.graphql(`
-              query($org: String!, $number: Int!) {
-                organization(login: $org) {
+              query($owner: String!, $number: Int!) {
+                user(login: $owner) {
                   projectV2(number: $number) {
                     id
                     fields(first: 20) {
@@ -79,9 +79,9 @@ jobs:
                   }
                 }
               }
-            `, { org, number: projectNumber });
+            `, { owner, number: projectNumber });
 
-            const proj = project.organization.projectV2;
+            const proj = project.user.projectV2;
             const statusField = proj.fields.nodes.find(f => f.name === "Status");
             const option = statusField.options.find(o => o.name === "In Progress");
 
@@ -156,13 +156,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const org = process.env.ORGANIZATION;
+            const owner = process.env.OWNER;
             const projectNumber = parseInt(process.env.PROJECT_NUMBER);
             const prNodeId = context.payload.pull_request.node_id;
 
             const project = await github.graphql(`
-              query($org: String!, $number: Int!) {
-                organization(login: $org) {
+              query($owner: String!, $number: Int!) {
+                user(login: $owner) {
                   projectV2(number: $number) {
                     id
                     fields(first: 20) {
@@ -177,9 +177,9 @@ jobs:
                   }
                 }
               }
-            `, { org, number: projectNumber });
+            `, { owner, number: projectNumber });
 
-            const proj = project.organization.projectV2;
+            const proj = project.user.projectV2;
             const statusField = proj.fields.nodes.find(f => f.name === "Status");
             const option = statusField.options.find(o => o.name === "Done");
 
@@ -249,13 +249,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const org = process.env.ORGANIZATION;
+            const owner = process.env.OWNER;
             const projectNumber = parseInt(process.env.PROJECT_NUMBER);
             const issueNodeId = context.payload.issue.node_id;
 
             const project = await github.graphql(`
-              query($org: String!, $number: Int!) {
-                organization(login: $org) {
+              query($owner: String!, $number: Int!) {
+                user(login: $owner) {
                   projectV2(number: $number) {
                     id
                     fields(first: 20) {
@@ -270,9 +270,9 @@ jobs:
                   }
                 }
               }
-            `, { org, number: projectNumber });
+            `, { owner, number: projectNumber });
 
-            const proj = project.organization.projectV2;
+            const proj = project.user.projectV2;
             const statusField = proj.fields.nodes.find(f => f.name === "Status");
             const option = statusField.options.find(o => o.name === "Done");
 
