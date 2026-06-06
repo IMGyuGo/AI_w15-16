@@ -8,7 +8,7 @@ on:
   create:
 
 env:
-  ORGANIZATION: IMGyuGo
+  OWNER: IMGyuGo
   PROJECT_NUMBER: 9
 
 jobs:
@@ -18,9 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Slack 알림 전송
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.0.0
         with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
           payload: |
             {
               "text": "🆕 새 이슈가 생성되었습니다!",
@@ -58,13 +59,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const org = process.env.ORGANIZATION;
+            const owner = process.env.OWNER;
             const projectNumber = parseInt(process.env.PROJECT_NUMBER);
             const issueNodeId = context.payload.issue.node_id;
 
             const project = await github.graphql(`
-              query($org: String!, $number: Int!) {
-                organization(login: $org) {
+              query($owner: String!, $number: Int!) {
+                user(login: $owner) {
                   projectV2(number: $number) {
                     id
                     fields(first: 20) {
@@ -79,9 +80,9 @@ jobs:
                   }
                 }
               }
-            `, { org, number: projectNumber });
+            `, { owner, number: projectNumber });
 
-            const proj = project.organization.projectV2;
+            const proj = project.user.projectV2;
             const statusField = proj.fields.nodes.find(f => f.name === "Status");
             const option = statusField.options.find(o => o.name === "In Progress");
 
@@ -116,9 +117,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Slack 알림 전송
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.0.0
         with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
           payload: |
             {
               "text": "🔀 새 PR이 생성되었습니다!",
@@ -156,13 +158,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const org = process.env.ORGANIZATION;
+            const owner = process.env.OWNER;
             const projectNumber = parseInt(process.env.PROJECT_NUMBER);
             const prNodeId = context.payload.pull_request.node_id;
 
             const project = await github.graphql(`
-              query($org: String!, $number: Int!) {
-                organization(login: $org) {
+              query($owner: String!, $number: Int!) {
+                user(login: $owner) {
                   projectV2(number: $number) {
                     id
                     fields(first: 20) {
@@ -177,9 +179,9 @@ jobs:
                   }
                 }
               }
-            `, { org, number: projectNumber });
+            `, { owner, number: projectNumber });
 
-            const proj = project.organization.projectV2;
+            const proj = project.user.projectV2;
             const statusField = proj.fields.nodes.find(f => f.name === "Status");
             const option = statusField.options.find(o => o.name === "Done");
 
@@ -209,9 +211,10 @@ jobs:
             });
 
       - name: Slack 알림 전송
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: slackapi/slack-github-action@v2.0.0
         with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
           payload: |
             {
               "text": "✅ PR이 머지되었습니다!",
@@ -249,13 +252,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const org = process.env.ORGANIZATION;
+            const owner = process.env.OWNER;
             const projectNumber = parseInt(process.env.PROJECT_NUMBER);
             const issueNodeId = context.payload.issue.node_id;
 
             const project = await github.graphql(`
-              query($org: String!, $number: Int!) {
-                organization(login: $org) {
+              query($owner: String!, $number: Int!) {
+                user(login: $owner) {
                   projectV2(number: $number) {
                     id
                     fields(first: 20) {
@@ -270,9 +273,9 @@ jobs:
                   }
                 }
               }
-            `, { org, number: projectNumber });
+            `, { owner, number: projectNumber });
 
-            const proj = project.organization.projectV2;
+            const proj = project.user.projectV2;
             const statusField = proj.fields.nodes.find(f => f.name === "Status");
             const option = statusField.options.find(o => o.name === "Done");
 
